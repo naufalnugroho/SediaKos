@@ -1,0 +1,7 @@
+@extends('layouts.app')
+@section('content')
+<div class="m-shell"><aside class="m-sidebar">@include('admin._sidebar')</aside><section class="m-main">
+    <div class="m-topbar"><div><h1 class="m-page-title">Fasilitas</h1><p class="m-page-subtitle">Kelola fasilitas yang tersedia di kos.</p></div><a href="{{ route('admin.fasilitas.create') }}" class="m-btn m-btn-primary"><iconify-icon icon="lucide:plus"></iconify-icon> Tambah fasilitas</a></div>
+    <div class="m-shell-card"><div class="m-card m-card-body m-table-wrap"><table class="m-table"><thead><tr><th>Nama</th><th>Dipakai di kos</th><th>Aksi</th></tr></thead><tbody>@forelse($fasilitas as $item)<tr><td>{{ $item->nama }}</td><td>{{ $item->kos_count }}</td><td><a href="{{ route('admin.fasilitas.edit', $item) }}" class="m-btn m-btn-secondary">Edit</a><form class="d-inline" method="POST" action="{{ route('admin.fasilitas.destroy', $item) }}" onsubmit="return confirm('Hapus fasilitas ini?')">@csrf @method('DELETE')<button class="m-btn m-btn-danger">Hapus</button></form></td></tr>@empty<tr><td colspan="3" class="m-empty">Belum ada fasilitas.</td></tr>@endforelse</tbody></table></div></div>{{ $fasilitas->links() }}
+</section></div>
+@endsection

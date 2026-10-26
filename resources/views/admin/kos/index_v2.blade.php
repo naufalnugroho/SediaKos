@@ -1,0 +1,7 @@
+@extends('layouts.app')
+@section('content')
+<div class="m-shell"><aside class="m-sidebar">@include('admin._sidebar')</aside><section class="m-main">
+    <div class="m-topbar"><div><h1 class="m-page-title">Data Kos</h1><p class="m-page-subtitle">Kelola daftar kos dan status publikasinya.</p></div><a href="{{ route('admin.kos.create') }}" class="m-btn m-btn-primary"><iconify-icon icon="lucide:plus"></iconify-icon> Tambah kos</a></div>
+    <div class="m-shell-card"><div class="m-card m-card-body m-table-wrap"><table class="m-table"><thead><tr><th>Nama</th><th>Wilayah</th><th>Status</th><th>Kamar</th><th>Aksi</th></tr></thead><tbody>@forelse($kos as $item)<tr><td><strong>{{ $item->nama }}</strong><div class="m-page-subtitle">{{ \Illuminate\Support\Str::limit($item->alamat, 55) }}</div></td><td>{{ $item->wilayah->nama }}</td><td><span class="m-status m-status-{{ $item->status ? 'success' : 'warning' }}"><iconify-icon icon="lucide:{{ $item->status ? 'circle-check' : 'circle-pause' }}"></iconify-icon>{{ $item->status ? 'Aktif' : 'Tidak aktif' }}</span></td><td>{{ $item->kamar_count }}</td><td><a href="{{ route('admin.kos.show', $item) }}" class="m-btn m-btn-secondary">Detail</a></td></tr>@empty<tr><td colspan="5" class="m-empty">Belum ada kos.</td></tr>@endforelse</tbody></table></div></div>{{ $kos->links() }}
+</section></div>
+@endsection
