@@ -1,1 +1,20 @@
-<a class="m-brand" href="{{ route('admin.dashboard') }}"><iconify-icon icon="lucide:loader-circle" aria-hidden="true"></iconify-icon> KosKita</a><div class="m-sidebar-label">Workspace</div><nav><a class="m-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><iconify-icon icon="lucide:layout-dashboard"></iconify-icon> Dashboard</a><a class="m-nav-link {{ request()->routeIs('admin.wilayah.*') ? 'active' : '' }}" href="{{ route('admin.wilayah.index') }}"><iconify-icon icon="lucide:map"></iconify-icon> Wilayah</a><a class="m-nav-link {{ request()->routeIs('admin.kos.*') ? 'active' : '' }}" href="{{ route('admin.kos.index') }}"><iconify-icon icon="lucide:house"></iconify-icon> Kos</a><a class="m-nav-link {{ request()->routeIs('admin.fasilitas.*') ? 'active' : '' }}" href="{{ route('admin.fasilitas.index') }}"><iconify-icon icon="lucide:boxes"></iconify-icon> Fasilitas</a><a class="m-nav-link {{ request()->routeIs('admin.kamar.*') ? 'active' : '' }}" href="{{ route('admin.kamar.index') }}"><iconify-icon icon="lucide:door-open"></iconify-icon> Kamar</a><a class="m-nav-link {{ request()->routeIs('admin.penghuni.*') ? 'active' : '' }}" href="{{ route('admin.penghuni.index') }}"><iconify-icon icon="lucide:users"></iconify-icon> Penghuni</a><a class="m-nav-link {{ request()->routeIs('admin.penyewaan.*') ? 'active' : '' }}" href="{{ route('admin.penyewaan.index') }}"><iconify-icon icon="lucide:key-round"></iconify-icon> Penyewaan</a><a class="m-nav-link {{ request()->routeIs('admin.tagihan.*') || request()->routeIs('admin.pembayaran.*') ? 'active' : '' }}" href="{{ route('admin.tagihan.index') }}"><iconify-icon icon="lucide:receipt"></iconify-icon> Tagihan</a><a class="m-nav-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" href="{{ route('admin.laporan.index') }}"><iconify-icon icon="lucide:chart-no-axes-combined"></iconify-icon> Laporan</a></nav>
+<a class="m-brand" href="{{ route('admin.dashboard') }}"><iconify-icon icon="lucide:building-2"></iconify-icon>SediaKos</a>
+<div class="m-sidebar-label">Pengelolaan kos</div>
+<nav aria-label="Menu owner">
+@foreach([
+    ['dashboard', 'layout-dashboard', 'Ringkasan'],
+    ['kos.index', 'building-2', 'Cabang kos'],
+    ['kamar.index', 'door-open', 'Kamar'],
+    ['fasilitas.index', 'wifi', 'Fasilitas'],
+    ['wilayah.index', 'map-pin', 'Lokasi'],
+    ['penghuni.index', 'users', 'Penghuni'],
+    ['penyewaan.index', 'key-round', 'Penyewaan'],
+    ['verifikasi.index', 'badge-check', 'Verifikasi pembayaran'],
+    ['tagihan.index', 'receipt', 'Tagihan'],
+    ['laporan.index', 'chart-no-axes-combined', 'Laporan'],
+    ['rekening.edit', 'landmark', 'Rekening pembayaran'],
+] as [$path, $icon, $label])
+    <a class="m-nav-link {{ request()->routeIs('admin.'.explode('.', $path)[0].'*') ? 'active' : '' }}" href="{{ route('admin.'.$path) }}"><iconify-icon icon="lucide:{{ $icon }}" aria-hidden="true"></iconify-icon>{{ $label }}</a>
+@endforeach
+</nav>
+<div class="admin-account"><strong>{{ auth()->user()->name }}</strong><span class="text-muted">{{ auth()->user()->email }}</span></div>

@@ -1,5 +1,41 @@
 # PRD --- Website Pencarian dan Manajemen Kos
 
+## Revisi kebutuhan — 26 Oktober 2026 (menggantikan cakupan lama yang bertentangan)
+
+Produk melayani satu owner dengan tiga cabang: Jatiwaringin, Kalibata,
+dan Margonda. Website mendukung penyewaan online, bukan hanya katalog.
+
+- Pengunjung melihat lokasi, fasilitas, harga bulanan, dan kamar tersedia.
+  Beranda mengikuti referensi `desain.html`, diimplementasikan dengan Blade,
+  Bootstrap 5, dan CSS proyek.
+- Calon penyewa membuat akun, memilih kamar, tanggal masuk, dan durasi 1–12
+  bulan. Pesanan langsung diterima tanpa persetujuan owner.
+- Server menghitung total harga kamar × durasi dan membuat tagihan. Pembayaran
+  awal melunasi seluruh durasi yang dipilih; tidak ada DP pada alur ini.
+- Kamar ditahan 24 jam dengan status `dipesan`. Pesanan yang belum mengunggah
+  bukti setelah batas waktu menjadi `kedaluwarsa`, lalu kamar dilepas.
+- Penyewa transfer manual dan upload JPG/PNG/PDF maksimal 5 MB. Bukti privat
+  hanya dapat diunduh penyewa terkait dan admin/owner.
+- Owner hanya memverifikasi pembayaran. Bukti menunggu verifikasi tidak
+  dihitung sebagai pemasukan. Selama verifikasi kamar tetap ditahan.
+- Pembayaran sesuai mengaktifkan sewa dan mengubah kamar menjadi `terisi`.
+  Penolakan wajib disertai alasan, memberi 24 jam baru untuk upload ulang.
+- Penyewa melihat sewa, tagihan, dan riwayat bukti miliknya. Pembatalan mandiri
+  hanya sebelum bukti sedang diverifikasi. Riwayat transaksi tetap disimpan.
+- Penguncian baris kamar dalam transaksi dipakai bersama untuk pemesanan
+  online dan pembuatan sewa admin. Kamar dianggap terpakai untuk seluruh
+  pesanan; pemesanan berdasarkan slot tanggal yang tidak tumpang tindih belum
+  disediakan.
+- Owner tetap memakai role backend `admin`; registrasi publik selalu
+  menghasilkan role `penyewa`. Multi-owner dan payment gateway tidak termasuk.
+- Seeder default hanya membuat tiga cabang tanpa mengarang kamar, harga,
+  alamat rinci, foto, atau rekening. Data contoh lama tidak dihapus otomatis.
+- Refund, pembatalan pembayaran online valid, dan perpanjangan mandiri belum
+  disediakan. Pengelola menangani koreksi tersebut di luar alur saat ini.
+
+Bagian berikut adalah baseline historis. Ketentuan 15 wilayah, demo Jogja,
+serta pengecualian akun publik/pemesanan mandiri di bawah tidak lagi berlaku.
+
 ## 1. Ringkasan Produk
 
 Website pencarian dan manajemen kos berbasis **Laravel 10**, PHP, MySQL,

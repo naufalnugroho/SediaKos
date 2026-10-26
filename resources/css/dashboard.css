@@ -1,0 +1,41 @@
+/* Adaptasi token dan pola shadcn/ui untuk komponen Blade. */
+.admin-ui { --color-primary:#18181b; --color-primary-deep:#27272a; --color-text:#09090b; --color-text-muted:#71717a; --color-text-subtle:#71717a; --color-border:#e4e4e7; --color-canvas:#fff; --color-surface:#fff; --color-surface-subtle:#fff; --color-surface-raised:#fafafa; --radius-lg:10px; --radius-md:6px; font-size:14px; }
+.admin-ui .m-shell { grid-template-columns:240px minmax(0,1fr); min-height:calc(100vh - 64px); }
+.admin-ui .m-sidebar { top:64px; height:calc(100vh - 64px); padding:22px 14px; overflow:auto; }
+.admin-ui .m-main { padding:32px; max-width:1600px; width:100%; }
+.admin-ui .m-shell-card { padding:0; box-shadow:0 1px 2px #00000005; }
+.admin-ui .m-shell-card > .m-card { border:0; }
+.admin-ui .m-card { box-shadow:0 1px 2px #00000005; }
+.admin-ui .m-card-body { padding:24px; }
+.admin-ui .m-brand { font-size:17px; margin:0 10px 24px; }
+.admin-ui .m-brand iconify-icon { font-size:23px; }
+.admin-ui .m-label,.admin-ui .m-sidebar-label { text-transform:none; letter-spacing:0; font-weight:500; }
+.admin-ui .m-nav-link { font-size:13px; min-height:36px; padding:8px 10px; border-radius:6px; margin:3px 0; }
+.admin-ui .m-nav-link.active { color:#18181b; background:#eaeaec; font-weight:600; }
+.admin-ui .m-nav-link:hover { color:#18181b; background:#f0f0f2; }
+.admin-ui .m-nav-link iconify-icon { font-size:17px; }
+.admin-ui .m-page-title { font-size:28px; letter-spacing:-.04em; }
+.admin-ui .m-btn { font-size:13px; font-weight:500; padding:8px 13px; min-height:36px; box-shadow:none; }
+.admin-ui .m-form-control,.admin-ui .form-control,.admin-ui .form-select { min-height:38px; padding:8px 11px; font-size:13px; }
+.admin-ui .m-form-control:focus,.admin-ui .form-control:focus,.admin-ui .form-select:focus { border-color:#a1a1aa; box-shadow:0 0 0 3px #18181b15; }
+.admin-ui .m-kpi-grid { gap:16px; }
+.admin-ui .m-kpi-value { font-size:28px; letter-spacing:-.035em; }
+.admin-ui .m-table th { background:#fafafa; font-size:12px; }
+.admin-ui .m-table td { color:#27272a; }
+.admin-ui .m-table td,.admin-ui .m-table th { padding:14px 16px; }
+.admin-ui .m-status { font-size:11px; padding:3px 8px; border:1px solid #e4e4e7; }
+.admin-ui .m-avatar { background:#f4f4f5; color:#18181b; border:1px solid #e4e4e7; }
+.admin-header { position:sticky; top:0; z-index:30; height:64px; padding:0 24px; background:#fffffffa; border-bottom:1px solid #e4e4e7; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.admin-header-start,.admin-header-actions { display:flex; align-items:center; gap:16px; }
+.admin-header a { font-size:13px; }
+.admin-header form { margin:0; }
+.admin-mobile-menu { display:none; }
+.admin-account { margin-top:28px; border-top:1px solid #e4e4e7; padding:18px 10px 0; font-size:12px; overflow-wrap:anywhere; }
+.admin-account strong { display:block; color:#18181b; margin-bottom:5px; }
+.admin-overlay { display:none; }
+.admin-ui .m-alert-wrap { margin:0; max-width:none; padding:12px 24px 0; }
+.admin-ui .m-alert-wrap:empty { padding:0; }
+.m-btn:disabled { opacity:.6; cursor:wait; }
+.m-login { padding:24px; }
+@media(max-width:980px) { .admin-ui .m-shell { display:block; } .admin-mobile-menu { display:inline-flex; } .admin-ui .m-sidebar { display:none; position:fixed; z-index:40; width:260px; top:64px; bottom:0; left:0; background:#fafafa; } .admin-ui.menu-open .m-sidebar { display:block; } .admin-ui.menu-open .admin-overlay { display:block; position:fixed; inset:64px 0 0; background:#0006; z-index:35; border:0; } .admin-ui .m-main { padding:24px 18px; } .admin-header { padding:0 18px; } }
+@media(max-width:600px) { .admin-header-label { display:none; } .admin-header-actions { gap:10px; } .admin-ui .m-topbar { flex-wrap:wrap; } .admin-ui .m-page-title { font-size:24px; } .admin-ui .m-card-body { padding:18px; } }

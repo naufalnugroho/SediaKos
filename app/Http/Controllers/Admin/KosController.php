@@ -24,7 +24,7 @@ class KosController extends Controller
 
     public function create(): View
     {
-        return view('admin.kos.form', ['kos' => new Kos(), 'wilayah' => Wilayah::orderBy('nama')->get(), 'fasilitas' => Fasilitas::orderBy('nama')->get()]);
+        return view('admin.kos.form', ['kos' => new Kos, 'wilayah' => Wilayah::orderBy('nama')->get(), 'fasilitas' => Fasilitas::orderBy('nama')->get()]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -32,18 +32,21 @@ class KosController extends Controller
         $kos = Kos::create($this->validated($request));
         $kos->fasilitas()->sync($request->input('fasilitas', []));
         $this->storePhotos($request, $kos);
+
         return redirect()->route('admin.kos.show', $kos)->with('success', 'Kos berhasil ditambahkan.');
     }
 
     public function show(Kos $kos): View
     {
         $kos->load(['wilayah', 'fasilitas', 'fotoKos' => fn ($query) => $query->orderBy('sort_order')]);
+
         return view('admin.kos.show', compact('kos'));
     }
 
     public function edit(Kos $kos): View
     {
         $kos->load('fasilitas');
+
         return view('admin.kos.form', ['kos' => $kos, 'wilayah' => Wilayah::orderBy('nama')->get(), 'fasilitas' => Fasilitas::orderBy('nama')->get()]);
     }
 
@@ -52,6 +55,7 @@ class KosController extends Controller
         $kos->update($this->validated($request, $kos));
         $kos->fasilitas()->sync($request->input('fasilitas', []));
         $this->storePhotos($request, $kos);
+
         return redirect()->route('admin.kos.show', $kos)->with('success', 'Kos berhasil diperbarui.');
     }
 
@@ -62,16 +66,30 @@ class KosController extends Controller
         }
 
         $paths = $kos->fotoKos()->pluck('path')->all();
-        DB::transaction(function () use ($kos) { $kos->fasilitas()->detach(); $kos->delete(); });
-        foreach ($paths as $path) { Storage::disk('public')->delete($path); }
+        DB::transaction(function () use ($kos) {
+            $kos->fasilitas()->detach();
+            $kos->delete();
+        });
+        foreach ($paths as $path) {
+            Storage::disk('public')->delete($path);
+        }
+
         return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil dihapus.');
     }
 
     public function destroyPhoto(FotoKos $fotoKos): RedirectResponse
     {
         $path = $fotoKos->path;
-        $fotoKos->delete();
+        DB::transaction(function () use ($fotoKos) {
+            $kosId = $fotoKos->kos_id;
+            $isPrimary = $fotoKos->is_primary;
+            $fotoKos->delete();
+            if ($isPrimary) {
+                FotoKos::where('kos_id', $kosId)->orderBy('sort_order')->first()?->update(['is_primary' => true]);
+            }
+        });
         Storage::disk('public')->delete($path);
+
         return back()->with('success', 'Foto berhasil dihapus.');
     }
 
@@ -79,8 +97,9 @@ class KosController extends Controller
     {
         DB::transaction(function () use ($fotoKos) {
             FotoKos::where('kos_id', $fotoKos->kos_id)->update(['is_primary' => false]);
-            $fotoKos->update(['is_primary' => true]);
+            $fotoKos->refresh()->update(['is_primary' => true]);
         });
+
         return back()->with('success', 'Foto utama berhasil diubah.');
     }
 
@@ -100,7 +119,9 @@ class KosController extends Controller
 
     private function storePhotos(Request $request, Kos $kos): void
     {
-        if (! $request->hasFile('photos')) return;
+        if (! $request->hasFile('photos')) {
+            return;
+        }
         $isFirst = ! $kos->fotoKos()->exists();
         foreach ($request->file('photos') as $index => $photo) {
             $path = $photo->store('kos/'.$kos->id, 'public');

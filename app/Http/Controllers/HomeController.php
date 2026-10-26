@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Fasilitas;
 use App\Models\Kos;
-use App\Models\Wilayah;
+use App\Services\OnlineRentalService;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function __invoke(): View
     {
+        app(OnlineRentalService::class)->expire();
+
         return view('welcome', [
-            'jumlahWilayah' => Wilayah::count(),
-            'jumlahKosAktif' => Kos::where('status', true)->count(),
-            'jumlahFasilitas' => Fasilitas::count(),
-            'kosUnggulan' => Kos::where('status', true)
-                ->with('wilayah')
-                ->withCount(['kamar as kamar_tersedia_count' => fn ($query) => $query->where('status', 'tersedia')])
-                ->latest()
-                ->take(3)
-                ->get(),
+            'cabang' => Kos::where('status', true)->whereHas('wilayah', fn ($q) => $q->whereIn('nama', ['Jatiwaringin', 'Kalibata', 'Margonda']))
+                ->with(['wilayah', 'fotoKos' => fn ($q) => $q->orderByDesc('is_primary')->orderBy('sort_order')])->withMin('kamar', 'harga')
+                ->withCount(['kamar as tersedia' => fn ($q) => $q->where('status', 'tersedia')])->orderBy('nama')->get(),
         ]);
     }
 }

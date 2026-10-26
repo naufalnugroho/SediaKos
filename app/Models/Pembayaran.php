@@ -14,7 +14,7 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'tagihan_id', 'dicatat_oleh', 'nominal', 'tanggal_bayar', 'metode', 'referensi',
-        'catatan', 'status', 'diverifikasi_pada',
+        'catatan', 'status', 'diverifikasi_pada', 'bukti_path', 'alasan_penolakan',
     ];
 
     protected $casts = [

@@ -5,6 +5,10 @@
 
 ## Tahap 0 --- Pemeriksaan dan Setup
 
+> Revisi 26 Oktober 2026: produk untuk satu owner dan tiga cabang, dengan
+> pemesanan online dan upload bukti transfer. PRD revisi menggantikan cakupan
+> historis 15 wilayah. Status checklist lama bukan verifikasi alur baru.
+
 -   [x] T0.1 Periksa versi PHP, Composer, Node.js, dan lingkungan
     lokal.
 -   [x] T0.2 Buat/periksa proyek Laravel 10 dan pastikan `composer.json`
@@ -184,5 +188,173 @@ dan keterbatasan didokumentasikan.
 
 ### Blocker / Keputusan
 
+### Revisi alur satu owner, tiga cabang — 26 Oktober 2026
+
+- [x] Registrasi penyewa dan login berdasarkan role; registrasi tidak dapat
+  membuat akun owner.
+- [x] Pemesanan kamar otomatis tanpa persetujuan owner; tagihan dihitung dari
+  harga database dan durasi 1–12 bulan.
+- [x] Kamar ditahan 24 jam untuk upload bukti, dapat dibatalkan sebelum
+  verifikasi, dan dilepas setelah kedaluwarsa; scheduler disiapkan.
+- [x] Upload bukti JPG/PNG/PDF maksimal 5 MB disimpan privat; akses dibatasi
+  pada penyewa terkait dan admin.
+- [x] Owner menerima/menolak pembayaran dengan alasan penolakan; hanya
+  pembayaran valid dihitung sebagai pemasukan. Pembayaran penuh mengaktifkan
+  sewa; tidak ada tahap persetujuan pengajuan.
+- [x] Halaman sewa dan riwayat bukti untuk penyewa; halaman verifikasi owner.
+- [x] Penguncian kamar dalam transaksi digunakan oleh alur online dan admin;
+  perubahan kamar yang sedang dipesan/disewa ditolak.
+- [x] Beranda mengikuti referensi `desain.html` dengan Blade/Bootstrap/CSS,
+  ilustrasi bangunan, pencarian, dan kartu tiga lokasi dari database.
+- [x] Seeder default tiga cabang tanpa harga/kamar/rekening fiktif; migration
+  dan `CabangKosSeeder` berhasil dijalankan pada MySQL lokal. Data lama tidak
+  dihapus; katalog publik dibatasi ke tiga lokasi bisnis.
+- [x] Build Vite, kompilasi Blade, pemeriksaan format/diff, HTTP 200 beranda,
+  dan 15 test (96 assertions) berhasil. Test berjalan pada SQLite dalam
+  memori, bukan MySQL lokal. Persaingan dua koneksi MySQL secara bersamaan
+  belum diuji otomatis.
+- [ ] Owner mengisi kamar, harga, foto, alamat lengkap, kontak, dan rekening
+  sebenarnya. Seeder hanya membuat informasi dasar cabang.
+- [ ] Verifikasi visual desktop/mobile dan uji transfer manual bersama owner.
+- [ ] Jalankan `schedule:work` lokal atau cron scheduler pada server.
+
+Aturan: total harga dibayar penuh untuk durasi pilihan; belum ada DP, refund,
+perpanjangan mandiri, atau pemesanan slot tanggal. Pembayaran valid dari alur
+online tidak dapat dibatalkan melalui menu pencatatan pembayaran manual.
+
+### Riwayat setup
+
+### Perapian UI penyewa dan perbaikan admin — 26 Oktober 2026
+
+- [x] UI katalog/detail/pemesanan/Sewa saya diselaraskan: kartu lokasi/foto,
+  filter berlabel, ringkasan biaya dinamis, tahap sewa, tab berjalan/riwayat,
+  batas bayar WIB, upload dengan nama file, dan riwayat bukti yang jelas.
+- [x] Preview bukti privat gambar/PDF dan download ditambahkan; halaman detail
+  admin memuat bukti, rincian transfer, hasil verifikasi, dan alasan penolakan.
+  File lokal yang sudah ada berhasil dilihat di browser admin.
+- [x] Tambah pengaturan rekening dari dashboard dengan validasi dan otorisasi;
+  migration diterapkan pada MySQL lokal. Tidak mengisi rekening fiktif.
+- [x] Tambah detail tagihan, riwayat pembayaran dan akses pembatalan manual;
+  filter daftar kamar/penyewaan/tagihan/verifikasi, pagination Bootstrap 5.
+- [x] Validasi pembayaran manual memeriksa sisa di dalam lock transaksi;
+  file bukti hilang tidak bisa diterima; penghuni yang selesai diperbarui
+  jika tidak memiliki sewa aktif lain; cegah nonaktif penghuni aktif.
+- [x] 27 test / 303 assertions lulus, build Vite/cache Blade/Pint/diff check
+  berhasil. Chromium: enam halaman publik/admin di 1440/390px tidak overflow,
+  seluruh indeks admin HTTP 200, preview gambar asli termuat, tanpa error JS.
+- [x] PANDUAN.md dan VERIFIKASI.md diperbarui dengan hasil dan batasnya.
+
+Belum diuji: transfer bank nyata, persaingan dua koneksi MySQL, PDF pada semua
+browser. Pemesanan baru di database pengguna tidak dibuat untuk menghindari
+mengubah kamar yang sedang dipesan; alur transaksi diuji di database terpisah.
+
+- Register diselaraskan dengan login: judul di atas kartu dan tautan masuk
+  di bawah kartu; padding desktop khusus register 170px, mobile 36px.
+  Build Vite, kompilasi Blade, dan diff check berhasil.
+
+- Posisi autentikasi desktop diturunkan dengan padding atas header 200px;
+  padding mobile tetap 36px. Perubahan CSS dibuild ulang melalui Vite.
+
+- Revisi login mengikuti referensi terbaru: background abu muda, logo/judul
+  terpusat, kartu putih dan tombol masuk gelap, tautan daftar di bawah kartu.
+  Tambahkan toggle password yang dapat diakses. Build/cache Blade/diff check
+  berhasil; 5 test autentikasi (20 assertions) lulus. Chromium pada 1440/390 px
+  tidak overflow dan tombol tampilkan password berfungsi.
+
+- Penyesuaian visual terbaru: ikon login/daftar disamakan dengan ikon atap
+  biru pada home, form auth dipusatkan horizontal, dan section CTA sebelum
+  footer memakai latar hitam selebar layar dengan teks terang/tombol putih.
+  Build Vite, kompilasi Blade, dan diff check berhasil.
+
+- Penyesuaian footer: latar biru muda diganti hitam (#000), teks/tautan
+  menjadi terang dan garis pembatas abu gelap. Build Vite dan diff check
+  berhasil; perubahan pada resources/css/landing.css.
+
+### Landing lengkap dan desain autentikasi — 26 Oktober 2026
+
+- [x] Login dan daftar memakai layout auth khusus sesuai referensi: logo
+  kiri atas, latar putih, form 360 px, input 44 px, tombol biru, Inter dan
+  Plus Jakarta Sans. CSRF, error validasi, old input, dan autentikasi tetap
+  berfungsi. Google/Apple tidak ditampilkan karena belum terintegrasi.
+- [x] Landing dilengkapi informasi layanan, FAQ interaktif, CTA, footer
+  navigasi cabang/informasi/akun, copyright, dan kembali ke atas.
+- [x] Build Vite dan cache Blade berhasil; 5 test autentikasi / 20 assertions
+  lulus. Login owner/penyewa dan logout berhasil di Chromium.
+- [x] Login, daftar, dan landing diperiksa pada viewport 1440 dan 390 px:
+  tidak ada overflow horizontal. FAQ dapat dibuka dan target anchor footer
+  valid. Screenshot login desktop diperiksa visual; tidak ada error JS pada
+  alur browser login/dashboard yang diperiksa.
+
+### Perbaikan 403 pada pemesanan — 26 Oktober 2026
+
+- [x] Temukan ketidaksesuaian: GET form terbuka bagi owner tetapi POST
+  hanya menerima role penyewa dan mengembalikan 403.
+- [x] Owner kini melihat penjelasan akun dan tombol keluar/ganti akun;
+  kiriman form lama dialihkan ke penjelasan tersebut tanpa membuat pesanan.
+- [x] Test regresi memeriksa GET/POST owner, kamar tetap tersedia, dan
+  penyewa bisa memesan sampai halaman upload pembayaran. OnlineRentalTest:
+  9 test / 91 assertions lulus; kompilasi Blade dan diff check berhasil.
+
+### Pembersihan data dummy atas permintaan pemilik — 26 Oktober 2026
+
+- [x] Identifikasi data dari DemoDataSeeder/WilayahSeeder dan periksa relasi;
+  tidak ditemukan transaksi non-demo pada kos contoh.
+- [x] Cadangkan record target ke JSON privat di direktori temporer lokal,
+  lalu hapus dalam transaksi: 10 kos, 30 kamar, 15 wilayah, 5 fasilitas contoh
+  yang tidak digunakan, 1 penghuni, 1 penyewaan, 1 tagihan, 1 pembayaran demo,
+  serta 32 relasi kos-fasilitas. Tidak ada foto pada kos demo.
+- [x] Verifikasi tersisa hanya tiga cabang/lokasi bisnis dan dua akun login;
+  kamar/penghuni/penyewaan/tagihan/pembayaran/fasilitas kosong. Beranda HTTP 200.
+
+Seeder default tetap CabangKosSeeder, sehingga `db:seed` biasa tidak
+mengembalikan data demo lama. Tidak menjalankan `migrate:fresh`.
+
+### Penyelarasan UI dan QA modul — 26 Oktober 2026
+
+- [x] Buat akun uji owner/penyewa melalui perintah khusus lingkungan lokal,
+  password acak, tanpa menyimpan password ke source atau menimpa akun lama.
+- [x] Adaptasi visual shadcn/ui dengan Blade/Bootstrap: tema zinc, sidebar
+  responsif, header, tabel, form, kartu, dan menu verifikasi.
+- [x] Samakan layout form/detail kos, fasilitas, dan lokasi. Warna publik
+  menggunakan aksen biru sesuai landing; dashboard menggunakan tema netral.
+- [x] Perbaiki binding route kos/fasilitas dan foto utama yang ditemukan
+  ketika pengujian modul, termasuk pengganti foto utama setelah dihapus.
+- [x] Perbaiki filter laporan pembayaran per cabang dan pengecualian piutang
+  dari sewa batal/kedaluwarsa; validasi filter tanggal.
+- [x] Perbaiki validasi kode kamar, filter harga pada kamar sama, dan redirect
+  login penyewa. Menu tagihan online mengarah ke verifikasi bukti.
+- [x] 23 test / 248 assertions lulus; 23 halaman admin dirender, akses penyewa
+  ditolak; build Vite, kompilasi Blade, jadwal, dan HTTP beranda diperiksa.
+- [x] Buat PANDUAN.md dan VERIFIKASI.md tanpa password dalam source.
+- [x] Pemeriksaan browser Chromium: login owner/penyewa lokal, logout, sidebar
+  mobile, dan navigasi verifikasi berhasil; tidak ada error JavaScript.
+  Screenshot desktop/mobile tersedia; dashboard desktop diperiksa visual.
+  Beranda dan verifikasi mobile tidak mempunyai overflow horizontal.
+
+Test menggunakan SQLite dalam memori. Transfer uang nyata dan persaingan
+dua transaksi MySQL belum diuji. Data kamar/harga/rekening asli tetap perlu
+diisi owner.
+
 -   Tidak ada blocker Tahap 0. PowerShell memblokir `npm.ps1`, sehingga
     perintah frontend dijalankan menggunakan `npm.cmd`.
+-   Verifikasi setup macOS (26 Oktober 2026): perintah Windows `copy`
+    gagal di zsh sehingga `.env` belum tersedia. `.env` lokal dibuat dari
+    `.env.example`, lalu `php artisan key:generate` berhasil. Format kunci
+    diverifikasi tanpa menampilkan nilainya; `.env` dipastikan diabaikan
+    Git. `php artisan --version` menghasilkan Laravel Framework 10.50.3.
+    README diperbarui dengan perintah macOS/Linux dan Windows. Koneksi
+    MySQL dan halaman aplikasi pada mesin ini belum diverifikasi ulang.
+-   Pemeriksaan lanjutan macOS (26 Oktober 2026): error koneksi `2002`
+    disebabkan layanan MySQL ServBay belum berjalan. MySQL 8.4 berhasil
+    dinyalakan melalui `servbayctl` dan port 3306 sudah terbuka. Pemeriksaan
+    koneksi Laravel selanjutnya menghasilkan kode MySQL `1045` (akses
+    ditolak). Blocker saat ini: username/password MySQL lokal perlu diisi
+    oleh pemilik di `.env`; migration dan halaman beranda belum dapat
+    diverifikasi. Panduan pemeriksaan koneksi ditambahkan ke README.
+-   Verifikasi asset macOS (26 Oktober 2026): `vite: command not found`
+    ditangani dengan `npm ci --include=dev --no-audit --no-fund` berdasarkan
+    lockfile yang tersedia. `npm run build` berhasil dengan Vite 5.4.21;
+    `public/build/manifest.json` dan kedua file CSS/JS tersedia. Pemanggilan
+    Vite melalui Laravel berhasil menghasilkan tag asset dari manifest.
+    Tidak ada perubahan dependensi atau template; tampilan di browser belum
+    diperiksa ulang.

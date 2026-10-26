@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        if (! $request->user()->isAdmin()) {
+        if (! $request->user()->isAdmin() && $request->user()->role !== 'penyewa') {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -35,7 +35,16 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Akun ini tidak memiliki akses admin.'])->withInput();
         }
 
-        return redirect()->intended(route('admin.dashboard'));
+        if ($request->user()->isAdmin()) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+        $intended = $request->session()->pull('url.intended');
+        $path = $intended ? parse_url($intended, PHP_URL_PATH) : null;
+        if ($path && preg_match('#^/kamar/\d+/sewa$#', $path)) {
+            return redirect($path);
+        }
+
+        return redirect()->route('penyewa.index');
     }
 
     public function destroy(Request $request): RedirectResponse

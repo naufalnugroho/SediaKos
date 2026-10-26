@@ -43,6 +43,10 @@ class Tagihan extends Model
 
     public function totalPembayaranValid(): string
     {
+        if ($this->relationLoaded('pembayaran')) {
+            return (string) $this->pembayaran->where('status', 'valid')->sum('nominal');
+        }
+
         return (string) $this->pembayaranValid()->sum('nominal');
     }
 

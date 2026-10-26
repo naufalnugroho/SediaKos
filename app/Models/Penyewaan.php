@@ -14,10 +14,11 @@ class Penyewaan extends Model
     protected $table = 'penyewaan';
 
     protected $fillable = [
-        'kamar_id', 'penghuni_id', 'tanggal_mulai', 'tanggal_akhir', 'status',
+        'kamar_id', 'penghuni_id', 'tanggal_mulai', 'tanggal_akhir', 'status', 'user_id', 'batas_bayar',
     ];
 
     protected $casts = [
+        'batas_bayar' => 'datetime',
         'tanggal_mulai' => 'date',
         'tanggal_akhir' => 'date',
     ];
